@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import 'package:bhajanavali/components/bhajan_time_map.dart';
+import 'package:bhajanavali/components/audio_ui.dart';
+
+
+class BhajanListScreen extends StatefulWidget {
+  const BhajanListScreen({Key? key}) : super(key: key);
+
+  @override
+  State<BhajanListScreen> createState() => _BhajanListScreenState();
+}
+
+class _BhajanListScreenState extends State<BhajanListScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.yellow,
+      body: Container(
+        child: ListView.builder(
+          itemCount : bhajanTitles.length,
+          itemBuilder: (BuildContext context, int index){
+            return Card(
+              color: Colors.yellow,
+              child : ListTile(
+                title: Text(bhajanTitles[index], style: TextStyle(fontSize: 19)),
+                subtitle: Text((bhajanEndDurations[index]-bhajanStartDurations[index]).toString().split('.').first.padLeft(1)),
+
+                onTap: (){
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AudioUI(initial : bhajanStartDurations[index],
+                          end : bhajanEndDurations[index])));
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

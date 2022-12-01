@@ -1,16 +1,14 @@
-import 'package:bhajanavali/screens/arati.dart';
+import 'package:bhajanavali/screens/bhajan_list.dart';
 import 'package:flutter/material.dart';
-import 'package:bhajanavali/screens/panchpadi.dart';
-import 'package:bhajanavali/screens/pad.dart';
 import 'components/button.dart';
+import 'components/bhajan_time_map.dart';
 
 void main() {
   runApp(MaterialApp(
+
     initialRoute: '/',
     routes: {
-      'Arati': (context) => const arati(),
-      'Panchpadi': (context) => const panchapadi(),
-      'Pad': (context) => const pad(),
+      'BhajanListScreen' : (context) => const BhajanListScreen(),
     },
     home: MyApp(),
   ));
@@ -41,11 +39,7 @@ class _MyAppState extends State<MyApp> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-
-                  Button(label: 'Panchpadi'),
-                  Button(label: 'Arati',),
-                  Button(label: 'Pad'),
-
+                  Button(text : "नित्य भजन सेवा", label: 'BhajanListScreen'),
                 ],
               ),
             )

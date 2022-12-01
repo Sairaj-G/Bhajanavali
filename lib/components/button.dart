@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class Button extends StatelessWidget {
 
   String ?label ;
+  String ?text ;
 
-  Button({this.label});
+  Button({this.label, this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,8 @@ class Button extends StatelessWidget {
           Navigator.pushNamed(context, label!);
         },
         child: Text(
-            label!,
+            text!,
+          style: TextStyle(fontSize: 19),
         ),
       ),
     );
