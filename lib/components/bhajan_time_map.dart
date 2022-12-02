@@ -14,5 +14,5 @@ List <Duration> bhajanEndDurations = [Duration(minutes: 59,seconds: 56) , Durati
   Duration(minutes: 9,seconds: 18), Duration(minutes : 16,seconds: 34), Duration(minutes : 20,seconds: 32),
   Duration(minutes : 26,seconds: 14), Duration(minutes : 39,seconds: 09), Duration(minutes : 42 ,seconds: 57),
   Duration(minutes : 47 ,seconds: 10), Duration(minutes : 49 ,seconds: 44), Duration(minutes : 53,seconds: 01),
-  Duration(minutes : 53,seconds: 01), Duration(minutes : 57 ,seconds: 14)];
+  Duration(minutes : 53,seconds: 01), Duration(minutes : 57 ,seconds: 13)];
 
