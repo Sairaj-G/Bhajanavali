@@ -2,6 +2,7 @@ import 'package:bhajanavali/screens/bhajan_list.dart';
 import 'package:flutter/material.dart';
 import 'components/button.dart';
 import 'components/bhajan_time_map.dart';
+import 'package:change_app_package_name/change_app_package_name.dart';
 
 void main() {
   runApp(MaterialApp(
