@@ -16,6 +16,11 @@ The audio player has all the features of any other audio player such as play/pau
 All the text in the app is in Marathi which is my native language and suits the purpose as all these devotional songs are in Marathi.
 
 
+### Screenshots
+![Home Page](https://github.com/Sairaj-G/Bhajanavali/blob/master/HomePage.jpg)
+![Audio UI](https://github.com/Sairaj-G/Bhajanavali/blob/master/AudioUI.jpg)
+![List](https://github.com/Sairaj-G/Bhajanavali/blob/master/List.jpg)
+
 
 
 
