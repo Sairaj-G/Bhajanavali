@@ -1,4 +1,3 @@
-
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 
@@ -18,4 +17,11 @@ void stop (AudioPlayer player, Duration initial, Duration end){
   player.stop();
   player!.seek(Duration.zero);
   player!.setClip(start: initial , end: end);
+}
+
+void restart (AudioPlayer player, Duration initial, Duration end){
+  player!.stop();
+  player!.seek(Duration.zero);
+  player!.setClip(start: initial , end: end);
+  player.play();
 }

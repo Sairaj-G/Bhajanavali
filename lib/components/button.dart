@@ -9,15 +9,16 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Container(
+      width: 0.75*(screenWidth),
       child: ElevatedButton(
         onPressed: () {
           Navigator.pushNamed(context, label!);
         },
         child: Text(
             text!,
-          style: TextStyle(fontSize: 19),
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );
@@ -25,10 +26,7 @@ class Button extends StatelessWidget {
 }
 
 class CustomIcon extends StatelessWidget {
-
-
   IconData? icon;
-
   CustomIcon ({this.icon});
 
   @override
