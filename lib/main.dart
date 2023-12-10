@@ -1,4 +1,5 @@
 import 'package:bhajanavali/screens/bhajan_list.dart';
+import 'package:bhajanavali/screens/bhajan_lyrics_screen.dart';
 import 'package:flutter/material.dart';
 import 'components/button.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,8 @@ void main() {
   ]).then((value) => runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      'BhajanListScreen' : (context) => const BhajanListScreen(),
+      'BhajanListenScreen' : (context) => const BhajanListScreen(),
+      'BhajanReadScreen' : (context) => const BhajanLyricsScreen()
     },
     home: MyApp(),
   )));
@@ -44,7 +46,12 @@ class _MyAppState extends State<MyApp> {
               child: Image.asset('assets/shreenath.JPEG'),
             ),
             Container(
-              child: Button(text : "नित्य भजन सेवा", label: 'BhajanListScreen'),
+              child: Column(
+                children: [
+                  Button(text : "श्रवण", label: 'BhajanListenScreen'),
+                  Button(text : "पठण", label: 'BhajanReadScreen')
+                ],
+              ),
             )
           ],
         ),
