@@ -6,7 +6,7 @@ import 'package:bhajanavali/components/functions.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 AudioPlayer player = AudioPlayer();
-bool repeat = true;
+bool repeat = false;
 
 class AudioUI extends StatefulWidget {
 
