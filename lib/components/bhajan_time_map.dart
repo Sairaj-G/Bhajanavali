@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 
-const url = "https://bhajanavali.github.io/bhanjan.mp3";
+const urlAudio = "https://bhajanavali.github.io/bhanjan.mp3";
+const urlPDF = "https://bhajanavali.github.io/book_compressed.pdf";
+
 List <String> bhajanTitles = ["पूर्ण पंचपदी", "श्री हालसिद्धनाथ अष्टक", "भज सदगुरु राजं", "जय गुरु जय गुरु",
   "प्रार्थना ऐका माझी", "नामस्मरण", "आरती", "जय जय श्री हालसिद्धा", "येई येई बा", "भूमी आप तेज वायू",
   "माझी प्रार्थना ऐका प्रभुजी", "विनवितो तुला", "पायी तुझ्या मस्तक हे असावे"];

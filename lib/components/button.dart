@@ -1,11 +1,12 @@
+import 'package:bhajanavali/components/functions.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
 
-  String ?label ;
-  String ?text ;
+  String? text ;
+  Function? onPressed ;
 
-  Button({this.label, this.text});
+  Button({this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class Button extends StatelessWidget {
       width: 0.75*(screenWidth),
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushNamed(context, label!);
+          onPressed!();
         },
         child: Text(
             text!,
@@ -25,6 +26,8 @@ class Button extends StatelessWidget {
   }
 }
 
+
+
 class CustomIcon extends StatelessWidget {
   IconData? icon;
   CustomIcon ({this.icon});
@@ -34,3 +37,4 @@ class CustomIcon extends StatelessWidget {
     return CircleAvatar(child: Icon(icon, size: 25, color: Colors.white), minRadius: 40.0, backgroundColor: Colors.blue);
   }
 }
+

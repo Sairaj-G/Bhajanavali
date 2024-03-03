@@ -48,8 +48,8 @@ class _MyAppState extends State<MyApp> {
             Container(
               child: Column(
                 children: [
-                  Button(text : "श्रवण", label: 'BhajanListenScreen'),
-                  Button(text : "पठण", label: 'BhajanReadScreen')
+                  Button(text : "श्रवण", onPressed: (){Navigator.pushNamed(context,  'BhajanListenScreen');}),
+                  Button(text : "पठण", onPressed : (){Navigator.pushNamed(context,  'BhajanReadScreen');})
                 ],
               ),
             )

@@ -2,6 +2,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'audio_ui.dart';
 import 'bhajan_time_map.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 
 
@@ -31,9 +32,10 @@ void restart (AudioPlayer player, Duration initial, Duration end) async {
 }
 Future<void> setup(AudioUI widget) async {
   try {
-    await player.setUrl(url);
+    await player.setUrl(urlAudio);
     await player.seek(widget.initial!);
     await player.setClip(start: widget.initial!, end: widget.end!);
+    result = await InternetConnectionCheckerPlus().hasConnection ;
   } catch (e) {
     throw (e);
   }
