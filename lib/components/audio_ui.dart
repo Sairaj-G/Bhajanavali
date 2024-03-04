@@ -12,8 +12,10 @@ class AudioUI extends StatefulWidget {
   Duration? initial;
   Duration? end;
   bool _playing = false;
-  AudioUI({this.initial, this.end});
+  String? audioLink;
+  AudioUI({this.initial, this.end, this.audioLink});
   Future? setup;
+
 
   @override
   State<AudioUI> createState() => _AudioUIState();

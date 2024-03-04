@@ -28,7 +28,8 @@ class _BhajanListScreenState extends State<BhajanListScreen> {
                 onTap: (){
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => AudioUI(initial : bhajanStartDurations[index],
-                          end : bhajanEndDurations[index])));
+                          end : bhajanEndDurations[index], audioLink: audioURL[index])));
+                  print(audioURL[index]);
                 },
               ),
             );

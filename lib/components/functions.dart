@@ -32,7 +32,7 @@ void restart (AudioPlayer player, Duration initial, Duration end) async {
 }
 Future<void> setup(AudioUI widget) async {
   try {
-    await player.setUrl(urlAudio);
+    await player.setUrl(widget.audioLink!);
     await player.seek(widget.initial!);
     await player.setClip(start: widget.initial!, end: widget.end!);
     result = await InternetConnectionCheckerPlus().hasConnection ;

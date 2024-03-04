@@ -45,7 +45,6 @@ dependencies:
   font_awesome_flutter: ^10.4.0
   syncfusion_flutter_pdfviewer: ^19.1.69-beta
   internet_connection_checker_plus: ^1.0.1
-  flutter_file_downloader: ^1.2.1
   path_provider: ^2.1.0
 
 
