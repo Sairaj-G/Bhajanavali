@@ -45,7 +45,7 @@ List<Duration> bhajanEndDurations = [
   Duration(minutes: 3, seconds: 10),
   Duration(minutes: 2, seconds: 34),
   Duration(minutes: 3, seconds: 17),
-  Duration(minutes: 6, seconds: 17)
+  Duration(minutes: 6, seconds: 54)
 ];
 
 List<String> audioURL = [
