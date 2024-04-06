@@ -34,13 +34,8 @@ void restart (AudioPlayer player, Duration initial, Duration end) async {
 Future<void> setup(AudioUI widget) async {
   try {
     // Execute tasks in parallel
-    final urlSetting = player.setUrl(widget.audioLink!, initialPosition: widget.initial!);
+    final urlSetting = await player.setUrl(widget.audioLink!, initialPosition: widget.initial!);
     final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
-
-    // Wait for all tasks to complete
-    await Future.wait([urlSetting]);
-
-    // Check internet connection in parallel
 
 
     // Update result after all tasks completed
