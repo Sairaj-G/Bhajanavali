@@ -30,13 +30,22 @@ void restart (AudioPlayer player, Duration initial, Duration end) async {
   await player!.setClip(start: initial , end: end);
   await player.play();
 }
+
 Future<void> setup(AudioUI widget) async {
   try {
-    await player.setUrl(widget.audioLink!);
-    await player.seek(widget.initial!);
-    await player.setClip(start: widget.initial!, end: widget.end!);
-    result = await InternetConnectionCheckerPlus().hasConnection ;
+    // Execute tasks in parallel
+    final urlSetting = player.setUrl(widget.audioLink!, initialPosition: widget.initial!);
+    final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
+
+    // Wait for all tasks to complete
+    await Future.wait([urlSetting]);
+
+    // Check internet connection in parallel
+
+
+    // Update result after all tasks completed
+    result = connectionResult;
   } catch (e) {
-    throw (e);
+    throw e;
   }
 }

@@ -13,7 +13,6 @@ List<String> bhajanTitles = [
   "येई येई बा",
   "भूमी आप तेज वायू",
   "माझी प्रार्थना ऐका प्रभुजी",
-  "विनवितो तुला",
   "पायी तुझ्या मस्तक हे असावे"
 ];
 
@@ -21,49 +20,46 @@ List<Duration> bhajanStartDurations = [
   Duration(seconds: 0),
   Duration(seconds: 0),
   Duration(seconds: 0),
-  Duration(minutes: 4, seconds: 45),
-  Duration(minutes: 9, seconds: 18),
-  Duration(minutes: 16, seconds: 34),
-  Duration(minutes: 20, seconds: 32),
-  Duration(minutes: 28, seconds: 00),
-  Duration(minutes: 39, seconds: 10),
-  Duration(minutes: 44, seconds: 00),
-  Duration(minutes: 47, seconds: 10),
-  Duration(minutes: 49, seconds: 44),
-  Duration(minutes: 52, seconds: 16),
-  Duration(minutes: 53, seconds: 1)
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
+  Duration(seconds: 0),
 ];
 
 List<Duration> bhajanEndDurations = [
   Duration(minutes: 19, seconds: 20),
   Duration(minutes: 59, seconds: 56),
   Duration(minutes: 2, seconds: 0),
-  Duration(minutes: 9, seconds: 18),
-  Duration(minutes: 16, seconds: 34),
-  Duration(minutes: 20, seconds: 32),
-  Duration(minutes: 26, seconds: 14),
-  Duration(minutes: 39, seconds: 09),
-  Duration(minutes: 42, seconds: 57),
-  Duration(minutes: 47, seconds: 10),
-  Duration(minutes: 49, seconds: 44),
-  Duration(minutes: 53, seconds: 01),
-  Duration(minutes: 53, seconds: 01),
-  Duration(minutes: 57, seconds: 13)
+  Duration(minutes: 4, seconds: 33),
+  Duration(minutes: 7, seconds: 16),
+  Duration(minutes: 3, seconds: 58),
+  Duration(minutes: 5, seconds: 42),
+  Duration(minutes: 11, seconds: 09),
+  Duration(minutes: 3, seconds: 47),
+  Duration(minutes: 3, seconds: 10),
+  Duration(minutes: 2, seconds: 34),
+  Duration(minutes: 3, seconds: 17),
+  Duration(minutes: 4, seconds: 12)
 ];
 
 List<String> audioURL = [
   "https://bhajanavali.github.io/rampath.mp3",
   "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3",
-  "https://bhajanavali.github.io/bhajan.mp3"
+  "https://bhajanavali.github.io/HalsiddhanathAshtak.mp3",
+  "https://bhajanavali.github.io/BhajSadhguruRajam.mp3",
+  "https://bhajanavali.github.io/JaiGuruJaiGuru.mp3",
+  "https://bhajanavali.github.io/PrarthanaAikaMazi.mp3",
+  "https://bhajanavali.github.io/Namasmaran.mp3",
+  "https://bhajanavali.github.io/Aarti.mp3",
+  "https://bhajanavali.github.io/JaiJaiShriHalsiddha.mp3",
+  "https://bhajanavali.github.io/YeiYeiBa.mp3",
+  "https://bhajanavali.github.io/BhumiAapTejVayu.mp3",
+  "https://bhajanavali.github.io/MaziPrarthanaAikaPrabhuji.mp3",
+  "https://bhajanavali.github.io/MaziPrarthanaAikaPrabhuji.mp3"
 ];
