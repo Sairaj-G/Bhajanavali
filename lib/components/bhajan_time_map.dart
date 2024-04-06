@@ -61,5 +61,5 @@ List<String> audioURL = [
   "https://bhajanavali.github.io/YeiYeiBa.mp3",
   "https://bhajanavali.github.io/BhumiAapTejVayu.mp3",
   "https://bhajanavali.github.io/MaziPrarthanaAikaPrabhuji.mp3",
-  "https://bhajanavali.github.io/MaziPrarthanaAikaPrabhuji.mp3"
+  "https://bhajanavali.github.io/PayiTuzyaMastakHeAsave.mp3"
 ];
