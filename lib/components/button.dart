@@ -10,7 +10,10 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
       width: 0.75*(screenWidth),
       child: ElevatedButton(
@@ -19,7 +22,7 @@ class Button extends StatelessWidget {
         },
         child: Text(
             text!,
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: responsiveDimensionResize(20, screenWidth, screenHeight)),
         ),
       ),
     );
@@ -34,7 +37,11 @@ class CustomIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(child: Icon(icon, size: 25, color: Colors.white), minRadius: 40.0, backgroundColor: Colors.blue);
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return CircleAvatar(child: Icon(icon, size: responsiveDimensionResize(20, screenWidth, screenHeight), color: Colors.white), minRadius: responsiveDimensionResize(45, screenWidth, screenHeight), backgroundColor: Colors.blue);
   }
 }
 

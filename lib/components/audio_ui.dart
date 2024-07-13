@@ -1,3 +1,4 @@
+import 'package:bhajanavali/components/bhajan_time_map.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
@@ -13,9 +14,10 @@ class AudioUI extends StatefulWidget {
   Duration? end;
   bool _playing = false;
   String? audioLink;
-  AudioUI({this.initial, this.end, this.audioLink});
+  int? bhajanIndex;
+  AudioUI({this.initial, this.end, this.audioLink, this.bhajanIndex});
   Future? setup;
-
+  String? bhajanTitle = "|| ||";
 
   @override
   State<AudioUI> createState() => _AudioUIState();
@@ -26,16 +28,20 @@ class _AudioUIState extends State<AudioUI> {
     result = false;
     super.initState();
     widget.setup = setup(widget);
+    player
+        .pause(); //Setting this to handle the edge case of a new bhajan being played while something other was being played.
+    widget.bhajanTitle =
+        "|| " + bhajanTitles[widget.bhajanIndex!].toString() + " ||";
   }
 
   @override
   void dispose() {
-    player.stop();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -45,8 +51,10 @@ class _AudioUIState extends State<AudioUI> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Text(widget.bhajanTitle!,
+                style: TextStyle(fontSize : responsiveDimensionResize(30, screenWidth, screenHeight), fontWeight: FontWeight.bold)),
             Container(
-              height: 7 / 10 * (screenHeight),
+              height: 7.0 / 10 * (screenHeight),
               width: 9.0 / 10 * (screenWidth),
               child: Image.asset('assets/shreenath.JPEG'),
             ),
@@ -66,6 +74,7 @@ class _AudioUIState extends State<AudioUI> {
                   return ProgressBar(
                     progress: progress!,
                     total: total,
+                    timeLabelTextStyle: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(15, screenWidth, screenHeight)),
                     onSeek: (duration) async {
                       await player.seek(duration);
                     },
@@ -99,8 +108,8 @@ class _AudioUIState extends State<AudioUI> {
                           future: widget.setup,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
-                                ConnectionState.done && result)
-                              {print(result);
+                                    ConnectionState.done &&
+                                result) {
                               return IconButton(
                                   icon: widget._playing
                                       ? CustomIcon(icon: Icons.pause)
@@ -112,9 +121,10 @@ class _AudioUIState extends State<AudioUI> {
                                     setState(() {
                                       widget._playing = !widget._playing;
                                     });
-                                  });}
-                            else {
-                              return CircularProgressIndicator(color : Colors.blue, strokeWidth: 1.0);
+                                  });
+                            } else {
+                              return CircularProgressIndicator(
+                                  color: Colors.blue, strokeWidth: 1.0);
                             }
                           }),
                       IconButton(
@@ -142,4 +152,3 @@ class _AudioUIState extends State<AudioUI> {
     );
   }
 }
-

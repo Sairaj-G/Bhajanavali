@@ -20,27 +20,47 @@ void fastForward (AudioPlayer player, Duration end, Duration initial) async {
 
 void stop (AudioPlayer player, Duration initial, Duration end) async {
   await player.stop();
-  await player!.seek(Duration.zero);
-  await player!.setClip(start: initial , end: end);
+  await player.seek(Duration.zero);
+  await player.setClip(start: initial , end: end);
 }
 
 void restart (AudioPlayer player, Duration initial, Duration end) async {
-  await player!.stop();
-  await  player!.seek(Duration.zero);
-  await player!.setClip(start: initial , end: end);
+  await player.stop();
+  await  player.seek(Duration.zero);
+  await player.setClip(start: initial , end: end);
   await player.play();
 }
 
 Future<void> setup(AudioUI widget) async {
   try {
-    // Execute tasks in parallel
     final urlSetting = await player.setUrl(widget.audioLink!, initialPosition: widget.initial!);
     final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
 
-
-    // Update result after all tasks completed
     result = connectionResult;
   } catch (e) {
     throw e;
   }
+}
+
+
+Future<void> setupWrapper (AudioUI widget) async {
+  await setup(widget);
+}
+
+double responsiveDimensionResize(double baseFontSize, double screenWidth, double screenHeight){
+  // Base dimensions (e.g., from a standard device like iPhone 11)
+  double baseWidth = 384.0;
+  double baseHeight = 805.3333333333334;
+
+  // Calculate the scale factor for width and height
+  double scaleWidth = screenWidth / baseWidth;
+  double scaleHeight = screenHeight / baseHeight;
+
+  // Use the minimum scale factor to ensure the text fits well on both dimensions
+  double scaleFactor = (scaleWidth < scaleHeight) ? scaleWidth : scaleHeight;
+
+  // Adjust font size based on scale factor and text scale factor
+  double fontSize = baseFontSize * scaleFactor;
+
+  return fontSize;
 }
