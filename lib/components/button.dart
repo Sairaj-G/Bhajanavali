@@ -41,7 +41,7 @@ class CustomIcon extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return CircleAvatar(child: Icon(icon, size: responsiveDimensionResize(20, screenWidth, screenHeight), color: Colors.white), minRadius: responsiveDimensionResize(45, screenWidth, screenHeight), backgroundColor: Colors.blue);
+    return CircleAvatar(child: Icon(icon, size: responsiveDimensionResize(20, screenWidth, screenHeight), color: Colors.white), minRadius: responsiveDimensionResize(45, screenWidth, screenHeight), maxRadius: responsiveDimensionResize(45, screenWidth, screenHeight), backgroundColor: Colors.blue);
   }
 }
 
