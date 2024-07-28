@@ -5,47 +5,103 @@ import 'bhajan_time_map.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 
+class BhajanPLayer  {
 
-void fastRewind (AudioPlayer player, Duration initial, Duration end) async {
-  Duration current = player.position;
-  Duration seek = Duration(seconds: 10);
-  current - seek < Duration.zero ? await player.seek(Duration.zero) : await player.seek(current - seek);
+   int? bhajanIndex;
+   AudioPlayer? player;
+
+   BhajanPLayer({required int bhajanIndex}){
+     this.bhajanIndex = bhajanIndex;
+     this.player = AudioPlayer();
+   }
+
+   void loadCurrentBhajan () async {
+     var urlSettings = await player!.setUrl(audioURL[bhajanIndex!]);
+   }
+
+   void changeBhajan (int changedIndex) async {
+     await player!.stop();
+     bhajanIndex = changedIndex;
+     loadCurrentBhajan();
+   }
+
+   void playNextBhajan(BuildContext context) {
+     if (bhajanIndex == bhajanTitles.length - 1) {
+       return;
+     }else{
+       Navigator.of(context).pushReplacement(
+           MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! + 1)));
+     }
+   }
+
+   void playPrevBhajan(BuildContext context) {
+     if (bhajanIndex == 0) {
+      return;
+     }
+     else {
+       Navigator.of(context).pushReplacement(
+           MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! - 1)));
+     }
+   }
+
+   void fastRewind () async {
+    Duration current = player!.position;
+    Duration seek = Duration(seconds: 5);
+    current - seek < Duration.zero ? await player!.seek(Duration.zero) : await player!.seek(current - seek);
+   }
+
+   void fastForward () async {
+    Duration end = bhajanEndDurations[bhajanIndex!];
+    Duration initial = Duration.zero;
+    Duration current = player!.position;
+    Duration seek = Duration(seconds: 5);
+    current + seek  < end - initial  ? await player!.seek(current + seek) : await player!.seek(end - initial);
+   }
+
+   void stopAndReset () async {
+    Duration end = bhajanEndDurations[bhajanIndex!];
+    Duration initial = Duration.zero;
+    await player!.stop();
+    await player!.seek(Duration.zero);
+    await player!.setClip(start: initial , end: end);
+   }
+
+   void restart () async {
+    Duration end = bhajanEndDurations[bhajanIndex!];
+    Duration initial = Duration.zero;
+    await player!.stop();
+    await player!.seek(Duration.zero);
+    await player!.setClip(start: initial , end: end);
+    await player!.play();
+   }
+
+   void play () {
+      player!.play();
+   }
+
+   void pause () {
+      player!.pause();
+   }
+
+   Future <void> seek (Duration duration) async {
+     await player!.seek(duration);
+   }
+
+   Future<void> updateInternetConnectionStatus () async {
+     final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
+     result = connectionResult;
+   }
+
 }
 
-void fastForward (AudioPlayer player, Duration end, Duration initial) async {
-  Duration current = player!.position;
-  Duration seek = Duration(seconds: 10);
-  current + seek  < end - initial  ? await player.seek(current + seek) : await player.seek(end - initial);
-}
-
-void stop (AudioPlayer player, Duration initial, Duration end) async {
-  await player.stop();
-  await player.seek(Duration.zero);
-  await player.setClip(start: initial , end: end);
-}
-
-void restart (AudioPlayer player, Duration initial, Duration end) async {
-  await player.stop();
-  await  player.seek(Duration.zero);
-  await player.setClip(start: initial , end: end);
-  await player.play();
-}
-
-Future<void> setup(AudioUI widget) async {
-  try {
-    final urlSetting = await player.setUrl(widget.audioLink!, initialPosition: widget.initial!);
-    final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
-
-    result = connectionResult;
-  } catch (e) {
-    throw e;
-  }
-}
 
 
-Future<void> setupWrapper (AudioUI widget) async {
-  await setup(widget);
-}
+
+
+
+
+
+
 
 double responsiveDimensionResize(double baseFontSize, double screenWidth, double screenHeight){
   // Base dimensions (e.g., from a standard device like iPhone 11)

@@ -2,11 +2,14 @@ import 'package:bhajanavali/components/functions.dart';
 import 'package:bhajanavali/screens/bhajan_list.dart';
 import 'package:bhajanavali/screens/bhajan_lyrics_screen.dart';
 import 'package:flutter/material.dart';
-import 'components/button.dart';
+import 'components/widgets.dart';
 import 'package:flutter/services.dart';
+
+BhajanPLayer? bhajanPLayer;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  bhajanPLayer = BhajanPLayer(bhajanIndex: -1);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp
@@ -46,7 +49,7 @@ class _MyAppState extends State<MyApp> {
               width: 0.9*screenWidth,
               child: Image.asset('assets/shreenath.JPEG'),
             ),
-            Center(child: Text(" || श्री हालसिध्दनाथ प्रसन्न || ", style: TextStyle(color: Colors.red, fontSize: responsiveDimensionResize(30, screenWidth, screenHeight)))),
+            Center(child: Text(" || श्री हालसिध्दनाथ प्रसन्न || ", style: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(30, screenWidth, screenHeight)))),
             Container(
               child: Column(
                 children: [

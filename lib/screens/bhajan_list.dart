@@ -1,4 +1,5 @@
 import 'package:bhajanavali/components/functions.dart';
+import 'package:bhajanavali/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bhajanavali/components/bhajan_time_map.dart';
 import 'package:bhajanavali/components/audio_ui.dart';
@@ -35,10 +36,9 @@ class _BhajanListScreenState extends State<BhajanListScreen> {
                   title: Text(bhajanTitles[index], style: TextStyle(fontSize: responsiveDimensionResize(20, screenWidth, screenHeight))),
                   subtitle: Text((bhajanEndDurations[index]-bhajanStartDurations[index]).toString().split('.').first.padLeft(1), style: TextStyle(fontSize: responsiveDimensionResize(12, screenWidth, screenHeight))),
 
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => AudioUI(initial : bhajanStartDurations[index],
-                            end : bhajanEndDurations[index], audioLink: audioURL[index], bhajanIndex : index )));
+                        MaterialPageRoute(builder: (context) => AudioUI(index)));
                     print(audioURL[index]);
                   },
                 ),

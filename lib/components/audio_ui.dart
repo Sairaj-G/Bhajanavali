@@ -1,23 +1,36 @@
 import 'package:bhajanavali/components/bhajan_time_map.dart';
+import 'package:bhajanavali/main.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:bhajanavali/components/button.dart';
+import 'package:bhajanavali/components/widgets.dart';
 import 'package:bhajanavali/components/functions.dart';
 
-AudioPlayer player = AudioPlayer();
+
 bool repeat = false;
 bool result = false;
 
 class AudioUI extends StatefulWidget {
-  Duration? initial;
-  Duration? end;
+
   bool _playing = false;
-  String? audioLink;
-  int? bhajanIndex;
-  AudioUI({this.initial, this.end, this.audioLink, this.bhajanIndex});
   Future? setup;
   String? bhajanTitle = "|| ||";
+  int? index;
+  bool changeInIndex = false;
+
+
+
+  AudioUI (int index) {
+    this.index = index;
+    if (this.index != bhajanPLayer!.bhajanIndex) {
+      bhajanPLayer!.bhajanIndex = this.index;
+      bhajanPLayer!.loadCurrentBhajan();
+      changeInIndex = true;
+    }else{
+
+    }
+
+  }
 
   @override
   State<AudioUI> createState() => _AudioUIState();
@@ -27,11 +40,11 @@ class _AudioUIState extends State<AudioUI> {
   void initState() {
     result = false;
     super.initState();
-    widget.setup = setup(widget);
-    player
+    widget.setup = bhajanPLayer!.updateInternetConnectionStatus();
+    bhajanPLayer!
         .pause(); //Setting this to handle the edge case of a new bhajan being played while something other was being played.
     widget.bhajanTitle =
-        "|| " + bhajanTitles[widget.bhajanIndex!].toString() + " ||";
+        "|| " + bhajanTitles[bhajanPLayer!.bhajanIndex!].toString() + " ||";
   }
 
   @override
@@ -51,8 +64,15 @@ class _AudioUIState extends State<AudioUI> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(widget.bhajanTitle!,
-                style: TextStyle(fontSize : responsiveDimensionResize(30, screenWidth, screenHeight), fontWeight: FontWeight.bold)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(onPressed: (){bhajanPLayer!.playPrevBhajan(context);}, child: Icon(Icons.arrow_back_ios)),
+                Text(widget.bhajanTitle!,
+                    style: TextStyle(fontSize : responsiveDimensionResize(20, screenWidth, screenHeight), fontWeight: FontWeight.bold)),
+                TextButton(onPressed: (){bhajanPLayer!.playNextBhajan(context);}, child: Icon(Icons.arrow_forward_ios))
+              ],
+            ),
             Container(
               height: 7.0 / 10 * (screenHeight),
               width: 9.0 / 10 * (screenWidth),
@@ -62,13 +82,13 @@ class _AudioUIState extends State<AudioUI> {
               height: 1 / 10 * (screenHeight),
               width: 9.0 / 10 * screenWidth,
               child: StreamBuilder<Duration>(
-                stream: player.positionStream,
+                stream: bhajanPLayer!.player!.positionStream,
                 builder: (context, snapshot) {
-                  final progress = (snapshot.data) ?? widget.initial;
-                  final total = widget.end! - widget.initial!;
+                  final progress = (snapshot.data) ?? bhajanStartDurations[widget.index!];
+                  final total = bhajanEndDurations[widget.index!] - bhajanStartDurations[widget.index!];
 
                   if (progress == total && repeat) {
-                    restart(player, widget.initial!, widget.end!);
+                    bhajanPLayer!.restart();
                   }
 
                   return ProgressBar(
@@ -76,7 +96,7 @@ class _AudioUIState extends State<AudioUI> {
                     total: total,
                     timeLabelTextStyle: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(15, screenWidth, screenHeight)),
                     onSeek: (duration) async {
-                      await player.seek(duration);
+                      await bhajanPLayer!.seek(duration);
                     },
                   );
                 },
@@ -90,9 +110,9 @@ class _AudioUIState extends State<AudioUI> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: CustomIcon(icon: Icons.fast_rewind),
+                        icon: CustomTextIcon(text:"-5"),
                         onPressed: () {
-                          fastRewind(player, widget.initial!, widget.end!);
+                          bhajanPLayer!.fastRewind();
                         },
                       ),
                       IconButton(
@@ -100,7 +120,7 @@ class _AudioUIState extends State<AudioUI> {
                         onPressed: () {
                           setState(() {
                             widget._playing = false;
-                            stop(player, widget.initial!, widget.end!);
+                            bhajanPLayer!.stopAndReset();
                           });
                         },
                       ),
@@ -116,8 +136,8 @@ class _AudioUIState extends State<AudioUI> {
                                       : CustomIcon(icon: Icons.play_arrow),
                                   onPressed: () async {
                                     widget._playing
-                                        ? await player.pause()
-                                        : player.play();
+                                        ? bhajanPLayer!.pause()
+                                        : bhajanPLayer!.play();
                                     setState(() {
                                       widget._playing = !widget._playing;
                                     });
@@ -137,9 +157,9 @@ class _AudioUIState extends State<AudioUI> {
                             });
                           }),
                       IconButton(
-                          icon: CustomIcon(icon: Icons.fast_forward),
+                          icon: CustomTextIcon(text: "+5"),
                           onPressed: () {
-                            fastForward(player, widget.end!, widget.initial!);
+                            bhajanPLayer!.fastForward();
                           })
                     ],
                   ),
