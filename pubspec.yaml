@@ -46,6 +46,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^19.1.69-beta
   internet_connection_checker_plus: ^1.0.1
   path_provider: ^2.1.0
+  connectivity_plus: ^2.1.0
 
 
 

@@ -15,9 +15,19 @@ class BhajanPLayer  {
      this.player = AudioPlayer();
    }
 
-   void loadCurrentBhajan () async {
-     var urlSettings = await player!.setUrl(audioURL[bhajanIndex!]);
-   }
+   Future <void> loadCurrentBhajan () async {
+     bool loaded = false;
+     while (!loaded) {
+       try {
+         var urlSettings = await player!.setUrl(audioURL[bhajanIndex!]);
+         loaded = true;
+       } catch (e) {};
+         await Future.delayed(Duration(seconds: 2));
+       }
+     }
+     void loadCurrentBhajanHelper() async {
+        await loadCurrentBhajan();
+     }
 
    void changeBhajan (int changedIndex) async {
      await player!.stop();

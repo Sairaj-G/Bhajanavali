@@ -5,26 +5,23 @@ import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:bhajanavali/components/widgets.dart';
 import 'package:bhajanavali/components/functions.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 bool repeat = false;
 bool result = false;
 
 class AudioUI extends StatefulWidget {
-
   bool _playing = false;
   Future? setup;
   String? bhajanTitle = "|| ||";
   int? index;
   bool changeInIndex = false;
 
-
-
-  AudioUI (int index) {
+  AudioUI(int index) {
     this.index = index;
     if (this.index != bhajanPLayer!.bhajanIndex) {
       bhajanPLayer!.bhajanIndex = this.index;
-      bhajanPLayer!.loadCurrentBhajan();
+      bhajanPLayer!.loadCurrentBhajanHelper();
       changeInIndex = true;
     }else{
 
@@ -54,7 +51,6 @@ class _AudioUIState extends State<AudioUI> {
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -67,10 +63,21 @@ class _AudioUIState extends State<AudioUI> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(onPressed: (){bhajanPLayer!.playPrevBhajan(context);}, child: Icon(Icons.arrow_back_ios)),
+                TextButton(
+                    onPressed: () {
+                      bhajanPLayer!.playPrevBhajan(context);
+                    },
+                    child: Icon(Icons.arrow_back_ios)),
                 Text(widget.bhajanTitle!,
-                    style: TextStyle(fontSize : responsiveDimensionResize(20, screenWidth, screenHeight), fontWeight: FontWeight.bold)),
-                TextButton(onPressed: (){bhajanPLayer!.playNextBhajan(context);}, child: Icon(Icons.arrow_forward_ios))
+                    style: TextStyle(
+                        fontSize: responsiveDimensionResize(
+                            20, screenWidth, screenHeight),
+                        fontWeight: FontWeight.bold)),
+                TextButton(
+                    onPressed: () {
+                      bhajanPLayer!.playNextBhajan(context);
+                    },
+                    child: Icon(Icons.arrow_forward_ios))
               ],
             ),
             Container(
@@ -84,8 +91,10 @@ class _AudioUIState extends State<AudioUI> {
               child: StreamBuilder<Duration>(
                 stream: bhajanPLayer!.player!.positionStream,
                 builder: (context, snapshot) {
-                  final progress = (snapshot.data) ?? bhajanStartDurations[widget.index!];
-                  final total = bhajanEndDurations[widget.index!] - bhajanStartDurations[widget.index!];
+                  final progress =
+                      (snapshot.data) ?? bhajanStartDurations[widget.index!];
+                  final total = bhajanEndDurations[widget.index!] -
+                      bhajanStartDurations[widget.index!];
 
                   if (progress == total && repeat) {
                     bhajanPLayer!.restart();
@@ -94,7 +103,10 @@ class _AudioUIState extends State<AudioUI> {
                   return ProgressBar(
                     progress: progress!,
                     total: total,
-                    timeLabelTextStyle: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(15, screenWidth, screenHeight)),
+                    timeLabelTextStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: responsiveDimensionResize(
+                            15, screenWidth, screenHeight)),
                     onSeek: (duration) async {
                       await bhajanPLayer!.seek(duration);
                     },
@@ -110,7 +122,7 @@ class _AudioUIState extends State<AudioUI> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: CustomTextIcon(text:"-5"),
+                        icon: CustomTextIcon(text: "-5"),
                         onPressed: () {
                           bhajanPLayer!.fastRewind();
                         },
@@ -124,12 +136,13 @@ class _AudioUIState extends State<AudioUI> {
                           });
                         },
                       ),
-                      FutureBuilder(
-                          future: widget.setup,
+                      StreamBuilder(
+                          stream: bhajanPLayer!.player!.processingStateStream,
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                    ConnectionState.done &&
-                                result) {
+                            if (snapshot.data == ProcessingState.buffering || snapshot.data == ProcessingState.loading) {
+                              return CircularProgressIndicator(
+                                  color: Colors.blue, strokeWidth: 1.0);
+                            } else {
                               return IconButton(
                                   icon: widget._playing
                                       ? CustomIcon(icon: Icons.pause)
@@ -142,9 +155,6 @@ class _AudioUIState extends State<AudioUI> {
                                       widget._playing = !widget._playing;
                                     });
                                   });
-                            } else {
-                              return CircularProgressIndicator(
-                                  color: Colors.blue, strokeWidth: 1.0);
                             }
                           }),
                       IconButton(
