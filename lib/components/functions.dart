@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'audio_ui.dart';
 import 'bhajan_time_map.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:http/http.dart' as http;
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 
 class BhajanPLayer  {
@@ -104,15 +108,6 @@ class BhajanPLayer  {
 
 }
 
-
-
-
-
-
-
-
-
-
 double responsiveDimensionResize(double baseFontSize, double screenWidth, double screenHeight){
   // Base dimensions (e.g., from a standard device like iPhone 11)
   double baseWidth = 384.0;
@@ -129,4 +124,42 @@ double responsiveDimensionResize(double baseFontSize, double screenWidth, double
   double fontSize = baseFontSize * scaleFactor;
 
   return fontSize;
+}
+
+class InternetConnectivityService {
+
+  final Connectivity _connectivity = Connectivity();
+  StreamController<bool> _controller = StreamController.broadcast();
+
+  InternetConnectivityService() {
+    _checkInternetConnectivity();
+  }
+
+  Stream<bool> get connectivityStream => _controller.stream;
+
+  void _checkInternetConnectivity() {
+    Timer.periodic(Duration(seconds: 3), (timer) async {
+      var connectivityResult = await _connectivity.checkConnectivity();
+      if (connectivityResult != ConnectivityResult.none) {
+        bool isConnected = await _hasInternetConnection();
+        _controller.add(isConnected);
+      } else {
+        _controller.add(false);
+      }
+    });
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    try {
+      final response = await http.head(Uri.parse('https://www.google.com'))
+          .timeout(Duration(seconds: 3));
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void dispose() {
+    _controller.close();
+  }
 }

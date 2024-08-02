@@ -11,14 +11,15 @@ bool repeat = false;
 bool result = false;
 
 class AudioUI extends StatefulWidget {
-  bool _playing = false;
   Future? setup;
   String? bhajanTitle = "|| ||";
   int? index;
   bool changeInIndex = false;
+  InternetConnectivityService? internetConnectivityService;
 
   AudioUI(int index) {
     this.index = index;
+    internetConnectivityService = InternetConnectivityService();
     if (this.index != bhajanPLayer!.bhajanIndex) {
       bhajanPLayer!.bhajanIndex = this.index;
       bhajanPLayer!.loadCurrentBhajanHelper();
@@ -131,31 +132,43 @@ class _AudioUIState extends State<AudioUI> {
                         icon: CustomIcon(icon: Icons.stop),
                         onPressed: () {
                           setState(() {
-                            widget._playing = false;
                             bhajanPLayer!.stopAndReset();
                           });
                         },
                       ),
                       StreamBuilder(
-                          stream: bhajanPLayer!.player!.processingStateStream,
+                          stream: widget!.internetConnectivityService!.connectivityStream,
                           builder: (context, snapshot) {
-                            if (snapshot.data == ProcessingState.buffering || snapshot.data == ProcessingState.loading) {
+                            if (snapshot.data == false) {
+                              bhajanPLayer!.pause();
                               return CircularProgressIndicator(
                                   color: Colors.blue, strokeWidth: 1.0);
                             } else {
-                              return IconButton(
-                                  icon: widget._playing
-                                      ? CustomIcon(icon: Icons.pause)
-                                      : CustomIcon(icon: Icons.play_arrow),
-                                  onPressed: () async {
-                                    widget._playing
-                                        ? bhajanPLayer!.pause()
-                                        : bhajanPLayer!.play();
-                                    setState(() {
-                                      widget._playing = !widget._playing;
-                                    });
-                                  });
-                            }
+                              return StreamBuilder(
+                                stream: bhajanPLayer!.player!.processingStateStream,
+                                builder: (context, snapshot) {
+                                  if (snapshot.data == ProcessingState.ready || snapshot.data == ProcessingState.completed){
+                                  return IconButton(
+                                      icon: bhajanPLayer!.player!.playing
+                                          ? CustomIcon(icon: Icons.pause)
+                                          : CustomIcon(icon: Icons.play_arrow),
+                                      onPressed: () async {
+                                        bhajanPLayer!.player!.playing
+                                            ? bhajanPLayer!.pause()
+                                            : bhajanPLayer!.play();
+                                        setState(() {
+
+                                        });
+                                      }
+
+                                       );
+                                }
+                                  else{
+                              return CircularProgressIndicator(
+                              color: Colors.blue, strokeWidth: 1.0); }
+                              }
+                              );
+                                  };
                           }),
                       IconButton(
                           icon: repeat
