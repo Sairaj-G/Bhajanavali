@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'audio_ui.dart';
-import 'bhajan_time_map.dart';
+import 'constants.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 
 class BhajanPLayer  {
@@ -23,12 +25,14 @@ class BhajanPLayer  {
      bool loaded = false;
      while (!loaded) {
        try {
-         var urlSettings = await player!.setUrl(audioURL[bhajanIndex!]);
+         await player!.setFilePath(audioFilePath[bhajanIndex!]);
+         await player!.setClip(start: bhajanStartDurations[bhajanIndex!], end: bhajanEndDurations[bhajanIndex!]);
          loaded = true;
        } catch (e) {};
          await Future.delayed(Duration(seconds: 2));
        }
      }
+
      void loadCurrentBhajanHelper() async {
         await loadCurrentBhajan();
      }
@@ -74,17 +78,17 @@ class BhajanPLayer  {
 
    void stopAndReset () async {
     Duration end = bhajanEndDurations[bhajanIndex!];
-    Duration initial = Duration.zero;
+    Duration initial = bhajanStartDurations[bhajanIndex!];
     await player!.stop();
-    await player!.seek(Duration.zero);
+    await player!.seek(bhajanStartDurations[bhajanIndex!]);
     await player!.setClip(start: initial , end: end);
    }
 
    void restart () async {
     Duration end = bhajanEndDurations[bhajanIndex!];
-    Duration initial = Duration.zero;
+    Duration initial = bhajanStartDurations[bhajanIndex!];
     await player!.stop();
-    await player!.seek(Duration.zero);
+    await player!.seek(bhajanStartDurations[bhajanIndex!]);
     await player!.setClip(start: initial , end: end);
     await player!.play();
    }
@@ -99,11 +103,6 @@ class BhajanPLayer  {
 
    Future <void> seek (Duration duration) async {
      await player!.seek(duration);
-   }
-
-   Future<void> updateInternetConnectionStatus () async {
-     final connectionResult = await InternetConnectionCheckerPlus().hasConnection;
-     result = connectionResult;
    }
 
 }
@@ -138,7 +137,7 @@ class InternetConnectivityService {
   Stream<bool> get connectivityStream => _controller.stream;
 
   void _checkInternetConnectivity() {
-    Timer.periodic(Duration(seconds: 3), (timer) async {
+    Timer.periodic(Duration(seconds: 5), (timer) async {
       var connectivityResult = await _connectivity.checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         bool isConnected = await _hasInternetConnection();
@@ -161,5 +160,65 @@ class InternetConnectivityService {
 
   void dispose() {
     _controller.close();
+  }
+}
+
+Future <bool> checkAndDownloadBhajan() async {
+
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  await appDocDir.create(recursive: true);
+
+  if (!await appDocDir.exists()) {
+    await appDocDir.create(recursive: true);
+    print("Directory created: ${appDocDir.path}");
+  }
+
+  String filePathRamPath ="rampath";
+  String filePathBhajan = "bhajan";
+
+  bool check = false;
+
+  try {
+    await getFileFromAppStorage(filePathBhajan, urlBhajan);
+  } catch (e) {
+    throw e;
+  }
+
+  try {
+    await getFileFromAppStorage(filePathRamPath, urlRampath);
+    check = true;
+  }catch (e) {
+    throw e;
+  }
+
+  return check;
+
+}
+
+Future<File> getFileFromAppStorage(String fileName, String url) async {
+  // Get the app-specific directory
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  String filePath = '${appDocDir.path}/$fileName';
+
+  File file = File(filePath);
+
+  // Check if the file exists
+  if (await file.exists()) {
+    print("File exists in app storage: $filePath");
+    return file;
+  } else {
+    // If the file does not exist, download it from the provided URL
+    print("Downloading file from URL: $url");
+
+    // Download the file
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      // Write the file to the app-specific storage
+      file = await file.writeAsBytes(response.bodyBytes);
+      print("File downloaded and saved: $filePath");
+      return file;
+    } else {
+      throw Exception("Failed to download file: ${response.statusCode}");
+    }
   }
 }

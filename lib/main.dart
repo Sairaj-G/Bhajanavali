@@ -6,10 +6,12 @@ import 'components/widgets.dart';
 import 'package:flutter/services.dart';
 
 BhajanPLayer? bhajanPLayer;
+Future <bool>? isDownloadComplete;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   bhajanPLayer = BhajanPLayer(bhajanIndex: -1);
+  isDownloadComplete = checkAndDownloadBhajan();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp
@@ -51,12 +53,31 @@ class _MyAppState extends State<MyApp> {
             ),
             Center(child: Text(" || श्री हालसिध्दनाथ प्रसन्न || ", style: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(30, screenWidth, screenHeight)))),
             Container(
-              child: Column(
-                children: [
-                  Button(text : "श्रवण", onPressed: (){Navigator.pushNamed(context,  'BhajanListenScreen');}),
-                  Button(text : "पठण", onPressed : (){Navigator.pushNamed(context,  'BhajanReadScreen');})
-                ],
-              ),
+              child: FutureBuilder(
+                future : isDownloadComplete,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.data == true) {
+                    return Column(
+                      children: [
+                        Button(text: "श्रवण", onPressed: () {
+                          Navigator.pushNamed(context, 'BhajanListenScreen');
+                        }),
+                        Button(text: "पठण", onPressed: () {
+                          Navigator.pushNamed(context, 'BhajanReadScreen');
+                        })
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        Text("ऑडिओ डाउनलोड होई पर्यंत प्रतीक्षा करावी. डाउनलोड एकदाच होईल.", style: TextStyle(color: Colors.black, fontSize: responsiveDimensionResize(15, screenWidth, screenHeight))),
+                        CircularProgressIndicator(),
+                      ],
+                    );
+                  }
+                }
+              )
             )
           ],
         ),

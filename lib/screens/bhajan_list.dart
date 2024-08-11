@@ -1,7 +1,7 @@
 import 'package:bhajanavali/components/functions.dart';
 import 'package:bhajanavali/main.dart';
 import 'package:flutter/material.dart';
-import 'package:bhajanavali/components/bhajan_time_map.dart';
+import 'package:bhajanavali/components/constants.dart';
 import 'package:bhajanavali/components/audio_ui.dart';
 
 
@@ -39,7 +39,6 @@ class _BhajanListScreenState extends State<BhajanListScreen> {
                   onTap: () {
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => AudioUI(index)));
-                    print(audioURL[index]);
                   },
                 ),
               ),

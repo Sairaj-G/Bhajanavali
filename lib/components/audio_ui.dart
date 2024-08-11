@@ -1,4 +1,4 @@
-import 'package:bhajanavali/components/bhajan_time_map.dart';
+import 'package:bhajanavali/components/constants.dart';
 import 'package:bhajanavali/main.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -11,7 +11,6 @@ bool repeat = false;
 bool result = false;
 
 class AudioUI extends StatefulWidget {
-  Future? setup;
   String? bhajanTitle = "|| ||";
   int? index;
   bool changeInIndex = false;
@@ -24,10 +23,7 @@ class AudioUI extends StatefulWidget {
       bhajanPLayer!.bhajanIndex = this.index;
       bhajanPLayer!.loadCurrentBhajanHelper();
       changeInIndex = true;
-    }else{
-
-    }
-
+    } else {}
   }
 
   @override
@@ -38,7 +34,6 @@ class _AudioUIState extends State<AudioUI> {
   void initState() {
     result = false;
     super.initState();
-    widget.setup = bhajanPLayer!.updateInternetConnectionStatus();
     bhajanPLayer!
         .pause(); //Setting this to handle the edge case of a new bhajan being played while something other was being played.
     widget.bhajanTitle =
@@ -136,39 +131,15 @@ class _AudioUIState extends State<AudioUI> {
                           });
                         },
                       ),
-                      StreamBuilder(
-                          stream: widget!.internetConnectivityService!.connectivityStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == false) {
-                              bhajanPLayer!.pause();
-                              return CircularProgressIndicator(
-                                  color: Colors.blue, strokeWidth: 1.0);
-                            } else {
-                              return StreamBuilder(
-                                stream: bhajanPLayer!.player!.processingStateStream,
-                                builder: (context, snapshot) {
-                                  if (snapshot.data == ProcessingState.ready || snapshot.data == ProcessingState.completed){
-                                  return IconButton(
-                                      icon: bhajanPLayer!.player!.playing
-                                          ? CustomIcon(icon: Icons.pause)
-                                          : CustomIcon(icon: Icons.play_arrow),
-                                      onPressed: () async {
-                                        bhajanPLayer!.player!.playing
-                                            ? bhajanPLayer!.pause()
-                                            : bhajanPLayer!.play();
-                                        setState(() {
-
-                                        });
-                                      }
-
-                                       );
-                                }
-                                  else{
-                              return CircularProgressIndicator(
-                              color: Colors.blue, strokeWidth: 1.0); }
-                              }
-                              );
-                                  };
+                      IconButton(
+                          icon: bhajanPLayer!.player!.playing
+                              ? CustomIcon(icon: Icons.pause)
+                              : CustomIcon(icon: Icons.play_arrow),
+                          onPressed: () async {
+                            bhajanPLayer!.player!.playing
+                                ? bhajanPLayer!.pause()
+                                : bhajanPLayer!.play();
+                            setState(() {});
                           }),
                       IconButton(
                           icon: repeat
