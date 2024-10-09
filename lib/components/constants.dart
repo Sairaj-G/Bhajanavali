@@ -2,6 +2,13 @@ const urlPDF = "https://bhajanavali.github.io/book_compressed.pdf";
 const urlBhajan = "https://bhajanavali.github.io/bhajan.mp3";
 const urlRampath = "https://bhajanavali.github.io/rampath.mp3";
 
+List<Map<String, dynamic>> files = [
+  {"url": urlPDF, "name": "pdf", "size": "8123131"},
+  {"url": urlBhajan, "name": "bhajan", "size": "48239266"},
+  {"url": urlRampath, "name": "rampath", "size": "18605999"},
+];
+
+
 List<String> bhajanTitles = [
   "रामपाठ",
   "पूर्ण पंचपदी",
@@ -69,3 +76,5 @@ List<String> audioFilePath = [
   "/data/user/0/com.example.bhajanavali/app_flutter/bhajan",
   "/data/user/0/com.example.bhajanavali/app_flutter/bhajan"
 ];
+
+String pdfFilePath = "/data/user/0/com.example.bhajanavali/app_flutter/pdf";

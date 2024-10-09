@@ -1,6 +1,7 @@
 import 'package:bhajanavali/components/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'dart:io';
 
 
 class BhajanLyricsScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _BhajanLyricsScreenState extends State<BhajanLyricsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.yellow,
-      body : SfPdfViewer.network(urlPDF, pageLayoutMode: PdfPageLayoutMode.continuous, scrollDirection: PdfScrollDirection.horizontal)
+      body : SfPdfViewer.file(File(pdfFilePath), pageLayoutMode: PdfPageLayoutMode.continuous, scrollDirection: PdfScrollDirection.horizontal)
     );
   }
 }

@@ -14,11 +14,10 @@ class AudioUI extends StatefulWidget {
   String? bhajanTitle = "|| ||";
   int? index;
   bool changeInIndex = false;
-  InternetConnectivityService? internetConnectivityService;
+
 
   AudioUI(int index) {
     this.index = index;
-    internetConnectivityService = InternetConnectivityService();
     if (this.index != bhajanPLayer!.bhajanIndex) {
       bhajanPLayer!.bhajanIndex = this.index;
       bhajanPLayer!.loadCurrentBhajanHelper();

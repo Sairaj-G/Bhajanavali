@@ -47,6 +47,8 @@ dependencies:
   internet_connection_checker_plus: ^1.0.1
   path_provider: ^2.1.0
   connectivity_plus: ^2.1.0
+  percent_indicator: ^4.2.3
+  async: ^2.8.2
 
 
 

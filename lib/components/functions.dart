@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:core';
+import 'package:async/async.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'audio_ui.dart';
@@ -125,44 +126,6 @@ double responsiveDimensionResize(double baseFontSize, double screenWidth, double
   return fontSize;
 }
 
-class InternetConnectivityService {
-
-  final Connectivity _connectivity = Connectivity();
-  StreamController<bool> _controller = StreamController.broadcast();
-
-  InternetConnectivityService() {
-    _checkInternetConnectivity();
-  }
-
-  Stream<bool> get connectivityStream => _controller.stream;
-
-  void _checkInternetConnectivity() {
-    Timer.periodic(Duration(seconds: 5), (timer) async {
-      var connectivityResult = await _connectivity.checkConnectivity();
-      if (connectivityResult != ConnectivityResult.none) {
-        bool isConnected = await _hasInternetConnection();
-        _controller.add(isConnected);
-      } else {
-        _controller.add(false);
-      }
-    });
-  }
-
-  Future<bool> _hasInternetConnection() async {
-    try {
-      final response = await http.head(Uri.parse('https://www.google.com'))
-          .timeout(Duration(seconds: 3));
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void dispose() {
-    _controller.close();
-  }
-}
-
 Future <bool> checkAndDownloadBhajan() async {
 
   Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -219,6 +182,107 @@ Future<File> getFileFromAppStorage(String fileName, String url) async {
       return file;
     } else {
       throw Exception("Failed to download file: ${response.statusCode}");
+    }
+  }
+}
+
+
+
+// Function to get the size of a single file using a HEAD request
+Future<int> getFileSize(String url) async {
+  final response = await http.head(Uri.parse(url));
+  if (response.statusCode == 200) {
+    final contentLength = response.headers['content-length'];
+    if (contentLength != null) {
+      return int.parse(contentLength);
+    } else {
+      throw Exception('Content-Length header is missing');
+    }
+  } else {
+    throw Exception('Failed to get file size: ${response.statusCode}');
+  }
+}
+
+// Function to estimate the total size of multiple files
+Future<List<int>> estimateTotalSizes(List<Map<String, dynamic>> files) async {
+  List<int> fileSizes = [];
+
+  for (var file in files) {
+    try {
+      // Fetch the size of each file and add it to the list
+      int fileSize = await getFileSize(file['url']!);
+      fileSizes.add(fileSize);
+      print('File: ${file['name']}, Size: $fileSize bytes');
+    } catch (e) {
+      print('Failed to get size for ${file['name']}: $e');
+      fileSizes.add(0); // Add 0 if file size cannot be determined
+    }
+  }
+
+  return fileSizes; // Return the list of file sizes
+}
+
+
+
+
+// Function to download a file and return a stream of progress
+Stream<int> downloadFile(String url, String fileName, int totalSize) async* {
+  final directory = await getApplicationDocumentsDirectory();
+  final filePath = '${directory.path}/$fileName';
+  final file = File(filePath);
+
+  if (await file.exists() && await file.length() == totalSize) {
+    yield totalSize; // If the file exists, emit its total size as downloaded
+    return;
+  }
+
+  final response = await http.Client().send(http.Request('GET', Uri.parse(url)));
+
+  if (response.statusCode == 200) {
+    final contentLength = response.contentLength ?? 0;
+    int downloadedBytes = 0;
+    final fileStream = file.openWrite();
+
+    await for (final chunk in response.stream) {
+      downloadedBytes += chunk.length;
+      fileStream.add(chunk);
+      yield downloadedBytes; // Emit the number of bytes downloaded so far
+    }
+
+    await fileStream.close();
+    yield contentLength; // Emit full size when download is complete
+  } else {
+    throw Exception('Failed to download file');
+  }
+}
+
+// Function to combine the progress of multiple downloads into a single stream
+Stream<double> downloadMultipleFiles(List<Map<String, dynamic>> files) async* {
+  int totalSize = 0;
+  int downloadedBytes = 0;
+
+  // Calculate total size from files
+  for (var file in files) {
+    totalSize += int.parse(file['size']);
+  }
+
+  // List of streams to track download progress for each file
+  List<Stream<int>> streams = files.map((file) => downloadFile(file['url']!, file['name']!, int.parse(file['size']))).toList();
+
+  // Create a list to store previous progress for each file stream
+  List<int> previousBytesList = List<int>.filled(files.length, 0);
+
+  // Listen to all streams and accumulate progress
+  for (int i = 0; i < streams.length; i++) {
+    await for (int bytes in streams[i]) {
+      // Calculate the difference (newly downloaded bytes) and add to the total
+      int previousBytes = previousBytesList[i];
+      int newBytes = bytes - previousBytes; // Only add the new chunk
+      downloadedBytes += newBytes;
+
+      // Update the previous bytes for this stream
+      previousBytesList[i] = bytes;
+      yield downloadedBytes / totalSize; // Emit cumulative progress as percentage
     }
   }
 }
