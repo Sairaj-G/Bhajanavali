@@ -57,54 +57,76 @@ class _MyAppState extends State<MyApp> {
                         fontSize: responsiveDimensionResize(
                             30, screenWidth, screenHeight)))),
             Container(
-                child: StreamBuilder<double>(
-                    stream: downloadMultipleFiles(files),
-                    builder: (context, snapshot) {
-                      if (snapshot.data != null) {
-                        final progress = snapshot.data!;
-                        if (progress == 1) {
-                          return Column(
-                            children: [
-                              Button(text: "श्रवण", onPressed: () {
-                                Navigator.pushNamed(context, 'BhajanListenScreen');
-                              }),
-                              Button(text: "पठण", onPressed: () {
-                                Navigator.pushNamed(context, 'BhajanReadScreen');
-                              })
-                            ],
-                          );
-                        } else {
-                          return Padding(
-                            padding: const EdgeInsets.all(30),
-                            child: Column(
-
-                                children: [
-                                  LinearProgressIndicator(value: progress, backgroundColor: Colors.white, color: Colors.blue),
-                                  Text(
-                                      "${(progress*100).toInt()} %",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: responsiveDimensionResize(
-                                              15, screenWidth, screenHeight))),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                        "ऑडिओ डाउनलोड होई पर्यंत प्रतीक्षा करावी. डाउनलोड एकदाच होईल.",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: responsiveDimensionResize(
-                                                20, screenWidth, screenHeight))),
-                                  )
-                                ]),
-                          );
-                        }
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    }))
+              child: StreamBuilder<double>(
+                stream: downloadMultipleFiles(files),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    // An error occurred during the download
+                    return Center(
+                      child: Text(
+                        'कृपया इंटरनेट कनेक्शन सह अॅप पुन्हा लाँच करा.',
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    final progress = snapshot.data!;
+                    if (progress == 1) {
+                      // Download completed
+                      return Column(
+                        children: [
+                          Button(
+                            text: "श्रवण",
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, 'BhajanListenScreen');
+                            },
+                          ),
+                          Button(
+                            text: "पठण",
+                            onPressed: () {
+                              Navigator.pushNamed(context, 'BhajanReadScreen');
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Download in progress
+                      return Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: Column(
+                          children: [
+                            LinearProgressIndicator(
+                              value: progress,
+                              backgroundColor: Colors.white,
+                              color: Colors.blue,
+                            ),
+                            Text(
+                              " ${(progress * 100).toInt()} %",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Text(
+                                "ऑडिओ डाउनलोड होई पर्यंत प्रतीक्षा करावी. डाउनलोड एकदाच होईल.",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  } else {
+                    // Initial loading state
+                    return Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            )
           ],
         ),
       ),

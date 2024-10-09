@@ -11,104 +11,108 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
+class BhajanPLayer {
+  int? bhajanIndex;
+  AudioPlayer? player;
 
-class BhajanPLayer  {
+  BhajanPLayer({required int bhajanIndex}) {
+    this.bhajanIndex = bhajanIndex;
+    this.player = AudioPlayer();
+  }
 
-   int? bhajanIndex;
-   AudioPlayer? player;
+  Future<void> loadCurrentBhajan() async {
+    bool loaded = false;
+    while (!loaded) {
+      try {
+        await player!.setFilePath(audioFilePath[bhajanIndex!]);
+        await player!.setClip(
+            start: bhajanStartDurations[bhajanIndex!],
+            end: bhajanEndDurations[bhajanIndex!]);
+        loaded = true;
+      } catch (e) {}
+      ;
+      await Future.delayed(Duration(seconds: 2));
+    }
+  }
 
-   BhajanPLayer({required int bhajanIndex}){
-     this.bhajanIndex = bhajanIndex;
-     this.player = AudioPlayer();
-   }
+  void loadCurrentBhajanHelper() async {
+    await loadCurrentBhajan();
+  }
 
-   Future <void> loadCurrentBhajan () async {
-     bool loaded = false;
-     while (!loaded) {
-       try {
-         await player!.setFilePath(audioFilePath[bhajanIndex!]);
-         await player!.setClip(start: bhajanStartDurations[bhajanIndex!], end: bhajanEndDurations[bhajanIndex!]);
-         loaded = true;
-       } catch (e) {};
-         await Future.delayed(Duration(seconds: 2));
-       }
-     }
+  void changeBhajan(int changedIndex) async {
+    await player!.stop();
+    bhajanIndex = changedIndex;
+    loadCurrentBhajan();
+  }
 
-     void loadCurrentBhajanHelper() async {
-        await loadCurrentBhajan();
-     }
-
-   void changeBhajan (int changedIndex) async {
-     await player!.stop();
-     bhajanIndex = changedIndex;
-     loadCurrentBhajan();
-   }
-
-   void playNextBhajan(BuildContext context) {
-     if (bhajanIndex == bhajanTitles.length - 1) {
-       return;
-     }else{
-       Navigator.of(context).pushReplacement(
-           MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! + 1)));
-     }
-   }
-
-   void playPrevBhajan(BuildContext context) {
-     if (bhajanIndex == 0) {
+  void playNextBhajan(BuildContext context) {
+    if (bhajanIndex == bhajanTitles.length - 1) {
       return;
-     }
-     else {
-       Navigator.of(context).pushReplacement(
-           MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! - 1)));
-     }
-   }
+    } else {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! + 1)));
+    }
+  }
 
-   void fastRewind () async {
+  void playPrevBhajan(BuildContext context) {
+    if (bhajanIndex == 0) {
+      return;
+    } else {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! - 1)));
+    }
+  }
+
+  void fastRewind() async {
     Duration current = player!.position;
     Duration seek = Duration(seconds: 5);
-    current - seek < Duration.zero ? await player!.seek(Duration.zero) : await player!.seek(current - seek);
-   }
+    current - seek < Duration.zero
+        ? await player!.seek(Duration.zero)
+        : await player!.seek(current - seek);
+  }
 
-   void fastForward () async {
+  void fastForward() async {
     Duration end = bhajanEndDurations[bhajanIndex!];
     Duration initial = Duration.zero;
     Duration current = player!.position;
     Duration seek = Duration(seconds: 5);
-    current + seek  < end - initial  ? await player!.seek(current + seek) : await player!.seek(end - initial);
-   }
+    current + seek < end - initial
+        ? await player!.seek(current + seek)
+        : await player!.seek(end - initial);
+  }
 
-   void stopAndReset () async {
+  void stopAndReset() async {
     Duration end = bhajanEndDurations[bhajanIndex!];
     Duration initial = bhajanStartDurations[bhajanIndex!];
     await player!.stop();
     await player!.seek(bhajanStartDurations[bhajanIndex!]);
-    await player!.setClip(start: initial , end: end);
-   }
+    await player!.setClip(start: initial, end: end);
+  }
 
-   void restart () async {
+  void restart() async {
     Duration end = bhajanEndDurations[bhajanIndex!];
     Duration initial = bhajanStartDurations[bhajanIndex!];
     await player!.stop();
     await player!.seek(bhajanStartDurations[bhajanIndex!]);
-    await player!.setClip(start: initial , end: end);
+    await player!.setClip(start: initial, end: end);
     await player!.play();
-   }
+  }
 
-   void play () {
-      player!.play();
-   }
+  void play() {
+    player!.play();
+  }
 
-   void pause () {
-      player!.pause();
-   }
+  void pause() {
+    player!.pause();
+  }
 
-   Future <void> seek (Duration duration) async {
-     await player!.seek(duration);
-   }
-
+  Future<void> seek(Duration duration) async {
+    await player!.seek(duration);
+  }
 }
 
-double responsiveDimensionResize(double baseFontSize, double screenWidth, double screenHeight){
+double responsiveDimensionResize(
+    double baseFontSize, double screenWidth, double screenHeight) {
   // Base dimensions (e.g., from a standard device like iPhone 11)
   double baseWidth = 384.0;
   double baseHeight = 805.3333333333334;
@@ -126,8 +130,7 @@ double responsiveDimensionResize(double baseFontSize, double screenWidth, double
   return fontSize;
 }
 
-Future <bool> checkAndDownloadBhajan() async {
-
+Future<bool> checkAndDownloadBhajan() async {
   Directory appDocDir = await getApplicationDocumentsDirectory();
   await appDocDir.create(recursive: true);
 
@@ -136,7 +139,7 @@ Future <bool> checkAndDownloadBhajan() async {
     print("Directory created: ${appDocDir.path}");
   }
 
-  String filePathRamPath ="rampath";
+  String filePathRamPath = "rampath";
   String filePathBhajan = "bhajan";
 
   bool check = false;
@@ -150,12 +153,11 @@ Future <bool> checkAndDownloadBhajan() async {
   try {
     await getFileFromAppStorage(filePathRamPath, urlRampath);
     check = true;
-  }catch (e) {
+  } catch (e) {
     throw e;
   }
 
   return check;
-
 }
 
 Future<File> getFileFromAppStorage(String fileName, String url) async {
@@ -185,8 +187,6 @@ Future<File> getFileFromAppStorage(String fileName, String url) async {
     }
   }
 }
-
-
 
 // Function to get the size of a single file using a HEAD request
 Future<int> getFileSize(String url) async {
@@ -222,9 +222,6 @@ Future<List<int>> estimateTotalSizes(List<Map<String, dynamic>> files) async {
   return fileSizes; // Return the list of file sizes
 }
 
-
-
-
 // Function to download a file and return a stream of progress
 Stream<int> downloadFile(String url, String fileName, int totalSize) async* {
   final directory = await getApplicationDocumentsDirectory();
@@ -236,23 +233,27 @@ Stream<int> downloadFile(String url, String fileName, int totalSize) async* {
     return;
   }
 
-  final response = await http.Client().send(http.Request('GET', Uri.parse(url)));
+  try {
+    final response =
+        await http.Client().send(http.Request('GET', Uri.parse(url)));
+    if (response.statusCode == 200) {
+      final contentLength = response.contentLength ?? 0;
+      int downloadedBytes = 0;
+      final fileStream = file.openWrite();
 
-  if (response.statusCode == 200) {
-    final contentLength = response.contentLength ?? 0;
-    int downloadedBytes = 0;
-    final fileStream = file.openWrite();
+      await for (final chunk in response.stream) {
+        downloadedBytes += chunk.length;
+        fileStream.add(chunk);
+        yield downloadedBytes; // Emit the number of bytes downloaded so far
+      }
 
-    await for (final chunk in response.stream) {
-      downloadedBytes += chunk.length;
-      fileStream.add(chunk);
-      yield downloadedBytes; // Emit the number of bytes downloaded so far
+      await fileStream.close();
+      yield contentLength; // Emit full size when download is complete
+    } else {
+      throw Exception('Failed to download file');
     }
-
-    await fileStream.close();
-    yield contentLength; // Emit full size when download is complete
-  } else {
-    throw Exception('Failed to download file');
+  } catch (e) {
+    throw e;
   }
 }
 
@@ -267,22 +268,30 @@ Stream<double> downloadMultipleFiles(List<Map<String, dynamic>> files) async* {
   }
 
   // List of streams to track download progress for each file
-  List<Stream<int>> streams = files.map((file) => downloadFile(file['url']!, file['name']!, int.parse(file['size']))).toList();
+  List<Stream<int>> streams = files
+      .map((file) =>
+      downloadFile(file['url']!, file['name']!, int.parse(file['size'])))
+      .toList();
 
   // Create a list to store previous progress for each file stream
   List<int> previousBytesList = List<int>.filled(files.length, 0);
 
   // Listen to all streams and accumulate progress
   for (int i = 0; i < streams.length; i++) {
-    await for (int bytes in streams[i]) {
-      // Calculate the difference (newly downloaded bytes) and add to the total
-      int previousBytes = previousBytesList[i];
-      int newBytes = bytes - previousBytes; // Only add the new chunk
-      downloadedBytes += newBytes;
+    try {
+      await for (int bytes in streams[i]) {
+        // Calculate the difference (newly downloaded bytes) and add to the total
+        int previousBytes = previousBytesList[i];
+        int newBytes = bytes - previousBytes; // Only add the new chunk
+        downloadedBytes += newBytes;
 
-      // Update the previous bytes for this stream
-      previousBytesList[i] = bytes;
-      yield downloadedBytes / totalSize; // Emit cumulative progress as percentage
+        // Update the previous bytes for this stream
+        previousBytesList[i] = bytes;
+        yield downloadedBytes / totalSize; // Emit cumulative progress as percentage
+      }
+    } catch (e) {
+      // Rethrow the exception so the caller can handle it
+      throw Exception('Error downloading file ${files[i]['name']}: $e');
     }
   }
 }
