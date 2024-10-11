@@ -1,17 +1,14 @@
 import 'package:bhajanavali/components/constants.dart';
 import 'package:bhajanavali/main.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:bhajanavali/components/widgets.dart';
 import 'package:bhajanavali/components/functions.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 bool repeat = false;
-bool result = false;
 
 class AudioUI extends StatefulWidget {
-  String? bhajanTitle = "|| ||";
+  String bhajanTitle = "|| ||";
   int? index;
   bool changeInIndex = false;
 
@@ -22,7 +19,7 @@ class AudioUI extends StatefulWidget {
       bhajanPLayer!.bhajanIndex = this.index;
       bhajanPLayer!.loadCurrentBhajanHelper();
       changeInIndex = true;
-    } else {}
+    }
   }
 
   @override
@@ -31,7 +28,6 @@ class AudioUI extends StatefulWidget {
 
 class _AudioUIState extends State<AudioUI> {
   void initState() {
-    result = false;
     super.initState();
     bhajanPLayer!
         .pause(); //Setting this to handle the edge case of a new bhajan being played while something other was being played.
@@ -39,12 +35,9 @@ class _AudioUIState extends State<AudioUI> {
         "|| " + bhajanTitles[bhajanPLayer!.bhajanIndex!].toString() + " ||";
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
-  @override
+
+
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -134,10 +127,10 @@ class _AudioUIState extends State<AudioUI> {
                           icon: bhajanPLayer!.player!.playing
                               ? CustomIcon(icon: Icons.pause)
                               : CustomIcon(icon: Icons.play_arrow),
-                          onPressed: () async {
+                          onPressed: () {
                             bhajanPLayer!.player!.playing
                                 ? bhajanPLayer!.pause()
-                                : bhajanPLayer!.play();
+                                : bhajanPLayer!.triggerPlay();
                             setState(() {});
                           }),
                       IconButton(

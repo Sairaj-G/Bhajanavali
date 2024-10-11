@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:core';
-import 'package:async/async.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'audio_ui.dart';
 import 'constants.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -36,79 +33,137 @@ class BhajanPLayer {
   }
 
   void loadCurrentBhajanHelper() async {
-    await loadCurrentBhajan();
+    try {
+      await loadCurrentBhajan();
+    } catch (e) {
+      print('Error in loadCurrentBhajanHelper: $e');
+    }
   }
 
   void changeBhajan(int changedIndex) async {
-    await player!.stop();
-    bhajanIndex = changedIndex;
-    loadCurrentBhajan();
+    try {
+      await player!.stop();
+      bhajanIndex = changedIndex;
+      await loadCurrentBhajan();
+    } catch (e) {
+      print('Error in changeBhajan: $e');
+    }
   }
 
   void playNextBhajan(BuildContext context) {
-    if (bhajanIndex == bhajanTitles.length - 1) {
-      return;
-    } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! + 1)));
+    try {
+      if (bhajanIndex == bhajanTitles.length - 1) {
+        return;
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! + 1)),
+        );
+      }
+    } catch (e) {
+      print('Error in playNextBhajan: $e');
     }
   }
 
   void playPrevBhajan(BuildContext context) {
-    if (bhajanIndex == 0) {
-      return;
-    } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! - 1)));
+    try {
+      if (bhajanIndex == 0) {
+        return;
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => AudioUI(bhajanIndex! - 1)),
+        );
+      }
+    } catch (e) {
+      print('Error in playPrevBhajan: $e');
     }
   }
 
   void fastRewind() async {
-    Duration current = player!.position;
-    Duration seek = Duration(seconds: 5);
-    current - seek < Duration.zero
-        ? await player!.seek(Duration.zero)
-        : await player!.seek(current - seek);
+    try {
+      Duration current = player!.position;
+      Duration seek = Duration(seconds: 5);
+      if (current - seek < Duration.zero) {
+        await player!.seek(Duration.zero);
+      } else {
+        await player!.seek(current - seek);
+      }
+    } catch (e) {
+      print('Error in fastRewind: $e');
+    }
   }
 
   void fastForward() async {
-    Duration end = bhajanEndDurations[bhajanIndex!];
-    Duration initial = Duration.zero;
-    Duration current = player!.position;
-    Duration seek = Duration(seconds: 5);
-    current + seek < end - initial
-        ? await player!.seek(current + seek)
-        : await player!.seek(end - initial);
+    try {
+      Duration end = bhajanEndDurations[bhajanIndex!];
+      Duration initial = Duration.zero;
+      Duration current = player!.position;
+      Duration seek = Duration(seconds: 5);
+      if (current + seek < end - initial) {
+        await player!.seek(current + seek);
+      } else {
+        await player!.seek(end - initial);
+      }
+    } catch (e) {
+      print('Error in fastForward: $e');
+    }
   }
 
   void stopAndReset() async {
-    Duration end = bhajanEndDurations[bhajanIndex!];
-    Duration initial = bhajanStartDurations[bhajanIndex!];
-    await player!.stop();
-    await player!.seek(bhajanStartDurations[bhajanIndex!]);
-    await player!.setClip(start: initial, end: end);
+    try {
+      Duration end = bhajanEndDurations[bhajanIndex!];
+      Duration initial = bhajanStartDurations[bhajanIndex!];
+      await player!.stop();
+      await player!.seek(bhajanStartDurations[bhajanIndex!]);
+      await player!.setClip(start: initial, end: end);
+    } catch (e) {
+      print('Error in stopAndReset: $e');
+    }
   }
 
   void restart() async {
-    Duration end = bhajanEndDurations[bhajanIndex!];
-    Duration initial = bhajanStartDurations[bhajanIndex!];
-    await player!.stop();
-    await player!.seek(bhajanStartDurations[bhajanIndex!]);
-    await player!.setClip(start: initial, end: end);
-    await player!.play();
+    try {
+      Duration end = bhajanEndDurations[bhajanIndex!];
+      Duration initial = bhajanStartDurations[bhajanIndex!];
+      await player!.stop();
+      await player!.seek(bhajanStartDurations[bhajanIndex!]);
+      await player!.setClip(start: initial, end: end);
+      await player!.play();
+    } catch (e) {
+      print('Error in restart: $e');
+    }
   }
 
-  void play() {
-    player!.play();
+  void triggerPlay () {
+    try{
+      play();
+    }catch (e) {
+      print("Error in triggerPlay : $e");
+    }
+  }
+  void play() async {
+    try {
+      await player!.play();
+    } catch (e) {
+      print('Error in play: $e');
+    }
   }
 
-  void pause() {
-    player!.pause();
+  void pause() async {
+    try {
+      await player!.pause();
+    } catch (e) {
+      print('Error in pause: $e');
+    }
   }
 
   Future<void> seek(Duration duration) async {
-    await player!.seek(duration);
+    try {
+      await player!.seek(duration);
+    } catch (e) {
+      print('Error in seek: $e');
+    }
   }
+
 }
 
 double responsiveDimensionResize(
@@ -128,36 +183,6 @@ double responsiveDimensionResize(
   double fontSize = baseFontSize * scaleFactor;
 
   return fontSize;
-}
-
-Future<bool> checkAndDownloadBhajan() async {
-  Directory appDocDir = await getApplicationDocumentsDirectory();
-  await appDocDir.create(recursive: true);
-
-  if (!await appDocDir.exists()) {
-    await appDocDir.create(recursive: true);
-    print("Directory created: ${appDocDir.path}");
-  }
-
-  String filePathRamPath = "rampath";
-  String filePathBhajan = "bhajan";
-
-  bool check = false;
-
-  try {
-    await getFileFromAppStorage(filePathBhajan, urlBhajan);
-  } catch (e) {
-    throw e;
-  }
-
-  try {
-    await getFileFromAppStorage(filePathRamPath, urlRampath);
-    check = true;
-  } catch (e) {
-    throw e;
-  }
-
-  return check;
 }
 
 Future<File> getFileFromAppStorage(String fileName, String url) async {

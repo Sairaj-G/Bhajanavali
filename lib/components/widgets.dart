@@ -1,9 +1,5 @@
 import 'package:bhajanavali/components/functions.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:bhajanavali/main.dart';
 
 class Button extends StatelessWidget {
   String? text;

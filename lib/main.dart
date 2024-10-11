@@ -7,12 +7,10 @@ import 'components/widgets.dart';
 import 'package:flutter/services.dart';
 
 BhajanPLayer? bhajanPLayer;
-Future<bool>? isDownloadComplete;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   bhajanPLayer = BhajanPLayer(bhajanIndex: -1);
-  isDownloadComplete = checkAndDownloadBhajan();
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
       .then((value) => runApp(MaterialApp(
@@ -101,7 +99,7 @@ class _MyAppState extends State<MyApp> {
                               color: Colors.blue,
                             ),
                             Text(
-                              " ${(progress * 100).toInt()} %",
+                              " ${(progress * 100).toInt()}%",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             ),
